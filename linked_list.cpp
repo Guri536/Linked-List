@@ -105,15 +105,34 @@ public:
     /// @param val The value to be found
     /// @param skip Default: 0 =>If multiple of the same element exists, then the no. of skips will correspond to which one of the duplicates will be send back
     /// @return int
-    int find(const int val, int skip = 0) {
+    int find(const int value, int skip = 0) {
         int index{};
         for (linked_list::Iterator iter{ begin() }; iter != nullptr; iter++, index++) {
-            if (iter->data == val && skip-- == 0) {
+            if (*iter == value && skip-- == 0) {
                 return index;
             }
         }
         return -1;
     }
+
+    void del(const int value) {
+        linked_list::Iterator iter{ begin() };
+        if (*iter == value) {
+            head = iter->link;
+        }
+        else {
+            while (iter->link->data != value) { iter++; }
+            node* temp = iter->link;
+            iter->link = iter->link->link;
+        }
+        _size--;
+    }
+
+    // void delin(const int indexa, const int indexb = 0) {
+    //     linked_list::Iterator
+    //     for (int i{};i < indexa;i++) {}
+
+    // }
 };
 
 int main() {
@@ -157,7 +176,13 @@ int main() {
         cout << list.find(j, i) << " ";
     }
 
-    println("\n\n");
+    println("\n\nDelete Values");
+    list.del(1);
+    list.del(8);
+    list.del(5);
+    list.print();
+
+    println("\n\nDelete from Indexes");
 
     println("\n\n\n\nStrings:");
     linked_list<string> list2("123", "Such a", "Why does this work");
