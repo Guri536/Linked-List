@@ -35,9 +35,12 @@ public:
     Iterator end() { return Iterator(last); }
 
     template<typename ...Args> linked_list(Args ...arg) { (append(arg), ...); }
-    template<typename ...Args> void append(const dt val, const Args ...arg) {
-        append(val);
-        append(arg...);
+    // template<typename ...Args> void append(const dt val, const Args ...arg) {
+    //     append(val);
+    //     append(arg...);
+    // }
+    template<typename ...Args> void appends(Args ...arg) {
+        (append(arg), ...);
     }
 
     dt operator[](const int index) {
@@ -101,43 +104,43 @@ public:
 };
 
 int main() {
-    linked_list<int> list(1, 2, 3);
-    list.append(4, 5);
-    cout << list.size() << "\n";
-    list.print();
-
-    println("\n\nIndexing Test:");
-    for (int i{}; i < list.size(); i++) {
-        cout << list[i] << " ";
-    }
-
-    println("\n\nInsertion Test: ");
-    list.insert(0, 99);
-    list.insert(list.size() / 2, 98);
-    list.insert(list.size(), 97);
-    list.print();
-
-    println("\n\nReplace by Index Test:");
-    list.replace(3, 7);
-    list.replace(0, 1);
-    list.replace(list.size() - 1, 100);
-    list.print();
-
-    println("\n\nClear Test:");
-    list.clear();
-    list.print();
-
-    println("\n\nReAdding Elements:");
-    list.append(1, 2, 3, 4, 5);
-    list.print();
-
-    // linked_list<string> list("123", "Such a", "Why does this work");
+    // linked_list<int> list(1, 2, 3);
+    // list.appends(4, 5);
+    // cout << list.size() << "\n";
     // list.print();
-    // list.append("hmm");
-    // list.append("wooowowow", "Please Work");
-    // list.append("No");
-    // println();
+
+    // println("\n\nIndexing Test:");
+    // for (int i{}; i < list.size(); i++) {
+    //     cout << list[i] << " ";
+    // }
+
+    // println("\n\nInsertion Test: ");
+    // list.insert(0, 99);
+    // list.insert(list.size() / 2, 98);
+    // list.insert(list.size(), 97);
     // list.print();
+
+    // println("\n\nReplace by Index Test:");
+    // list.replace(3, 7);
+    // list.replace(0, 1);
+    // list.replace(list.size() - 1, 100);
+    // list.print();
+
+    // println("\n\nClear Test:");
+    // list.clear();
+    // list.print();
+
+    // println("\n\nReAdding Elements:");
+    // list.appends(1, 2, 3, 4, 5);
+    // list.print();
+
+    linked_list<string> list("123", "Such a", "Why does this work");
+    list.print();
+    list.append("hmm");
+    list.appends("wooowowow", "Please Work");
+    list.append("No");
+    println();
+    list.print();
 
     // linked_list<float> list(4.2, 0.123, 9.1233);
     // list.print();
