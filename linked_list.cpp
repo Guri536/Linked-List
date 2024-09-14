@@ -101,8 +101,8 @@ public:
         last = nullptr;
     }
 
-    int find(const int val, const int skip){
-        
+    int find(const int val, const int skip) {
+        return 0;
     }
 };
 
@@ -144,8 +144,9 @@ int main() {
     println();
     list2.print();
 
-    // linked_list<float> list(4.2, 0.123, 9.1233);
-    // list.print();
+    println("\n\nFloats:");
+    linked_list<float> list3(4.2, 0.123, 9.1233);
+    list3.print();
 
     return 0;
 }
