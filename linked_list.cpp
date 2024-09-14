@@ -35,9 +35,18 @@ public:
     Iterator end() { return Iterator(last); }
 
     template<typename ...Args> linked_list(Args ...arg) { (append(arg), ...); }
-    template<typename ...Args> void append(Args ...arg) { (append(arg), ...); }
+    template<typename ...Args> void append(const dt val, const Args ...arg) {
+        append(val);
+        append(arg...);
+    }
 
-    void append(dt value) {
+    dt operator[](const int index) {
+        linked_list::Iterator iter = begin();
+        for (int i{ index }; i > 0; i--) { iter++; }
+        return *iter;
+    }
+
+    void append(const dt value) {
         if (this->head == nullptr) {
             head = new node(value);
             last = head;
@@ -53,7 +62,7 @@ public:
 
     void print() {
         std::print("{} ", "{");
-        for (auto iter = begin(); iter != nullptr ; iter++) {
+        for (linked_list::Iterator iter = begin(); iter != nullptr; iter++) {
             std::print("{} ", *iter);
         }
         std::print("{}", "}");
@@ -63,7 +72,24 @@ public:
 int main() {
     linked_list<int> list(1, 2, 3);
     list.append(4, 5);
-    cout << list.size() << "\n";
+    // cout << list.size() << "\n";
     list.print();
+    println();
+    for (int i{}; i < list.size(); i++) {
+        cout << list[i] << " ";
+    }
+    println();
+
+    // linked_list<string> list("123", "Such a", "Why does this work");
+    // list.print();
+    // list.append("hmm");
+    // list.append("wooowowow", "Please Work");
+    // list.append("No");
+    // println();
+    // list.print();
+
+    // linked_list<float> list(4.2, 0.123, 9.1233);
+    // list.print();
+
     return 0;
 }
