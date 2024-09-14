@@ -101,8 +101,18 @@ public:
         last = nullptr;
     }
 
-    int find(const int val, const int skip) {
-        return 0;
+    /// @brief Returns the Index of the value if found, if not in list, returns -1
+    /// @param val The value to be found
+    /// @param skip Default: 0 =>If multiple of the same element exists, then the no. of skips will correspond to which one of the duplicates will be send back
+    /// @return int
+    int find(const int val, int skip = 0) {
+        int index{};
+        for (linked_list::Iterator iter{ begin() }; iter != nullptr; iter++, index++) {
+            if (iter->data == val && skip-- == 0) {
+                return index;
+            }
+        }
+        return -1;
     }
 };
 
@@ -137,7 +147,19 @@ int main() {
     list.appends(1, 2, 3, 4, 5);
     list.print();
 
-    println("\n\nStrings:");
+    println("\n\nFinding:\n1 at {}\n3 at {}\n5 at {}", list.find(1), list.find(3), list.find(5));
+
+    list.appends(4, 8, 9, 2, 0, 1, -5, 2, 5);
+    println("\nAdded Elements:");
+    list.print();
+    print("\n\nDuplicates: \n5 at: ");
+    for (int i{}, j{ 5 }; list.find(j, i) != -1;i++) {
+        cout << list.find(j, i) << " ";
+    }
+
+    println("\n\n");
+
+    println("\n\n\n\nStrings:");
     linked_list<string> list2("123", "Such a", "Why does this work");
     list2.print();
     list2.appends("wooowowow", "Please Work");
