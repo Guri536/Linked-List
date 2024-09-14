@@ -58,6 +58,10 @@ public:
         _size++;
     }
 
+    void end_update() {
+        while (last->link != nullptr) { last = last->link; }
+    }
+
     int size() { return _size; }
 
     void print() {
@@ -67,18 +71,65 @@ public:
         }
         std::print("{}", "}");
     }
+
+    void insert(const int index, const dt value) {
+        node* temp = new node(value);
+        if (index == 0) {
+            temp->link = head;
+            head = temp;
+        }
+        else {
+            linked_list::Iterator iter = begin();
+            for (int i{}; i < index - 1; i++) { iter++; }
+            temp->link = iter->link;
+            iter->link = temp;
+            end_update();
+        }
+        _size++;
+    }
+
+    void replace(const int index, const dt value) {
+        linked_list::Iterator iter = begin();
+        for (int i{}; i < index; i++) { iter++; }
+        iter->data = value;
+    }
+
+    void clear() {
+        head = nullptr;
+        last = nullptr;
+    }
 };
 
 int main() {
     linked_list<int> list(1, 2, 3);
     list.append(4, 5);
-    // cout << list.size() << "\n";
+    cout << list.size() << "\n";
     list.print();
-    println();
+
+    println("\n\nIndexing Test:");
     for (int i{}; i < list.size(); i++) {
         cout << list[i] << " ";
     }
-    println();
+
+    println("\n\nInsertion Test: ");
+    list.insert(0, 99);
+    list.insert(list.size() / 2, 98);
+    list.insert(list.size(), 97);
+    list.print();
+
+    println("\n\nReplace by Index Test:");
+    list.replace(3, 7);
+    list.replace(0, 1);
+    list.replace(list.size() - 1, 100);
+    list.print();
+
+    println("\n\nClear Test:");
+    list.clear();
+    list.print();
+
+    println("\n\nReAdding Elements:");
+    list.append(1, 2, 3, 4, 5);
+    list.print();
 
     // linked_list<string> list("123", "Such a", "Why does this work");
     // list.print();
