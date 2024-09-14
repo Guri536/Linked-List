@@ -6,6 +6,7 @@ struct _node {
     data_type data{};
     _node<data_type>* link = nullptr;
     _node(data_type value) : data(value) {}
+    _node(data_type value, _node<data_type>* _link) : data(value), link(_link) {}
     ~_node() {
         if (link != nullptr)
             delete link;
@@ -59,6 +60,11 @@ public:
         _size++;
     }
 
+    void prepend(const dt value) {
+        head = new node(value, head);
+        _size++;
+    }
+
     void end_update() {
         while (last->link != nullptr) { last = last->link; }
     }
@@ -75,17 +81,11 @@ public:
 
     void insert(const int index, const dt value) {
         node* temp = new node(value);
-        if (index == 0) {
-            temp->link = head;
-            head = temp;
-        }
-        else {
-            linked_list::Iterator iter = begin();
-            for (int i{}; i < index - 1; i++) { iter++; }
-            temp->link = iter->link;
-            iter->link = temp;
-            end_update();
-        }
+        linked_list::Iterator iter = begin();
+        for (int i{}; i < index - 1; i++) { iter++; }
+        temp->link = (index == 0 ? head : iter->link);
+        (index == 0 ? head : iter->link) = temp;
+        end_update();
         _size++;
     }
 
@@ -99,13 +99,14 @@ public:
         delete head;
         head = nullptr;
         last = nullptr;
+        _size = 0;
     }
 
     /// @brief Returns the Index of the value if found, if not in list, returns -1
     /// @param val The value to be found
     /// @param skip Default: 0 =>If multiple of the same element exists, then the no. of skips will correspond to which one of the duplicates will be send back
     /// @return int
-    int find(const int value, int skip = 0) {
+    int find(const dt value, int skip = 0) {
         int index{};
         for (linked_list::Iterator iter{ begin() }; iter != nullptr; iter++, index++) {
             if (*iter == value && skip-- == 0) {
@@ -115,7 +116,7 @@ public:
         return -1;
     }
 
-    void del(const int value) {
+    void del(const dt value) {
         linked_list::Iterator iter{ begin() };
         if (*iter == value) {
             head = iter->link;
@@ -126,19 +127,24 @@ public:
             iter->link = iter->link->link;
         }
         _size--;
+        end_update();
     }
 
-    // void delin(const int indexa, const int indexb = 0) {
-    //     linked_list::Iterator
-    //     for (int i{};i < indexa;i++) {}
-
-    // }
+    void delin(const int indexa, const int indexb = 1) {
+        linked_list::Iterator iter{ begin() };
+        for (int i{};i < indexa - 1;i++) { iter++; }
+        linked_list::Iterator iter2{ iter->link };
+        for (int i{};i < indexb - (indexa != 0 ? 1 : 2);i++) { iter2++; }
+        (indexa == 0 ? head : iter->link) = iter2->link;
+        _size -= indexb;
+        end_update();
+    }
 };
 
 int main() {
     linked_list<int> list(1, 2, 3);
     list.appends(4, 5);
-    cout << list.size() << "\n";
+    cout << "\nSize: " << list.size() << "\n";
     list.print();
 
     println("\n\nIndexing Test:");
@@ -183,6 +189,14 @@ int main() {
     list.print();
 
     println("\n\nDelete from Indexes");
+    // list.delin(3);
+    list.delin(3, list.size() - 4);
+    list.print();
+
+    println("\n\nPrepend:");
+    list.prepend(1);
+    list.print();
+    cout << "\nSize: " << list.size() << "\n";
 
     println("\n\n\n\nStrings:");
     linked_list<string> list2("123", "Such a", "Why does this work");
