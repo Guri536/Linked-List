@@ -6,6 +6,10 @@ struct _node {
     data_type data{};
     _node<data_type>* link = nullptr;
     _node(data_type value) : data(value) {}
+    ~_node() {
+        if (link != nullptr)
+            delete link;
+    }
 };
 
 template<typename s_data_type>
@@ -35,10 +39,7 @@ public:
     Iterator end() { return Iterator(last); }
 
     template<typename ...Args> linked_list(Args ...arg) { (append(arg), ...); }
-    template<typename ...Args> void append(const dt val, const Args ...arg) {
-        append(val);
-        append(arg...);
-    }
+    template<typename ...Args> void appends(Args ...arg) { (append(arg), ...); }
 
     dt operator[](const int index) {
         linked_list::Iterator iter = begin();
@@ -95,14 +96,19 @@ public:
     }
 
     void clear() {
+        delete head;
         head = nullptr;
         last = nullptr;
+    }
+
+    int find(const int val, const int skip){
+        
     }
 };
 
 int main() {
     linked_list<int> list(1, 2, 3);
-    list.append(4, 5);
+    list.appends(4, 5);
     cout << list.size() << "\n";
     list.print();
 
@@ -128,16 +134,15 @@ int main() {
     list.print();
 
     println("\n\nReAdding Elements:");
-    list.append(1, 2, 3, 4, 5);
+    list.appends(1, 2, 3, 4, 5);
     list.print();
 
-    // linked_list<string> list("123", "Such a", "Why does this work");
-    // list.print();
-    // list.append("hmm");
-    // list.append("wooowowow", "Please Work");
-    // list.append("No");
-    // println();
-    // list.print();
+    println("\n\nStrings:");
+    linked_list<string> list2("123", "Such a", "Why does this work");
+    list2.print();
+    list2.appends("wooowowow", "Please Work");
+    println();
+    list2.print();
 
     // linked_list<float> list(4.2, 0.123, 9.1233);
     // list.print();
