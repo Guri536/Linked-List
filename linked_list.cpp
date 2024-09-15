@@ -29,7 +29,7 @@ public:
         node* ptr;
     public:
         Iterator(node* _ptr) : ptr(_ptr) {}
-        dt operator*() { return ptr->data; }
+        dt* operator*() { return &(ptr->data); }
         node* operator->() { return ptr; }
         Iterator* operator++() { ptr = ptr->link; return this; }
         Iterator* operator++(int) { return ++ * this; }
@@ -42,7 +42,7 @@ public:
     template<typename ...Args> linked_list(Args ...arg) { (append(arg), ...); }
     template<typename ...Args> void appends(Args ...arg) { (append(arg), ...); }
 
-    dt operator[](const int index) {
+    dt* operator[](const int index) {
         linked_list::Iterator iter = begin();
         for (int i{ index }; i > 0; i--) { iter++; }
         return *iter;
@@ -65,19 +65,36 @@ public:
         _size++;
     }
 
-    void end_update() {
+    void end_update() noexcept {
         while (last->link != nullptr) { last = last->link; }
     }
 
     int size() { return _size; }
 
-    void print() {
+    template <typename T, typename = void>
+    struct check : false_type {};
+
+    template <typename T>
+    struct check<T, typename enable_if<is_same<decltype(declval<std::ostream&>() << declval<T>()), ostream&>::value>::type>
+        : true_type {};
+
+    // void print() {
+    template<typename> typename enable_if<check<dt>::value, void>::type print() {
         std::print("{} ", "{");
         for (linked_list::Iterator iter = begin(); iter != nullptr; iter++) {
-            std::print("{} ", *iter);
+            cout << **iter; cout << " ";
+            // cout << typeid(decltype(*iter)).name() << " ";
         }
         std::print("{}", "}");
     }
+    template<typename> typename enable_if<!check<dt>::value, void>::type print() {
+        std::print("Bruh");
+    }
+
+    // void println() {
+    //     print();
+    //     std::println();
+    // }
 
     void insert(const int index, const dt value) {
         node* temp = new node(value);
@@ -95,7 +112,7 @@ public:
         iter->data = value;
     }
 
-    void clear() {
+    void clear() noexcept {
         delete head;
         head = nullptr;
         last = nullptr;
@@ -141,73 +158,22 @@ public:
     }
 };
 
+struct mydt {
+    int a{};
+    string b;
+    mydt(int i, string j) : a(i), b(j) {}
+};
+
 int main() {
-    linked_list<int> list(1, 2, 3);
-    list.appends(4, 5);
-    cout << "\nSize: " << list.size() << "\n";
+    // linked_list<mydt> list;
+    // list.appends(mydt(1, "boo"), mydt(4, "wow"));
+    // list.print();
+    // // list.print();
+    // for (int i : views::iota(0, list.size())) {
+    //     cout << list[i]->b << " ";
+    // }
+    linked_list<int> list;
+    list.appends(7, 2, 2, 4, 12, 5);
     list.print();
-
-    println("\n\nIndexing Test:");
-    for (int i{}; i < list.size(); i++) {
-        cout << list[i] << " ";
-    }
-
-    println("\n\nInsertion Test: ");
-    list.insert(0, 99);
-    list.insert(list.size() / 2, 98);
-    list.insert(list.size(), 97);
-    list.print();
-
-    println("\n\nReplace by Index Test:");
-    list.replace(3, 7);
-    list.replace(0, 1);
-    list.replace(list.size() - 1, 100);
-    list.print();
-
-    println("\n\nClear Test:");
-    list.clear();
-    list.print();
-
-    println("\n\nReAdding Elements:");
-    list.appends(1, 2, 3, 4, 5);
-    list.print();
-
-    println("\n\nFinding:\n1 at {}\n3 at {}\n5 at {}", list.find(1), list.find(3), list.find(5));
-
-    list.appends(4, 8, 9, 2, 0, 1, -5, 2, 5);
-    println("\nAdded Elements:");
-    list.print();
-    print("\n\nDuplicates: \n5 at: ");
-    for (int i{}, j{ 5 }; list.find(j, i) != -1;i++) {
-        cout << list.find(j, i) << " ";
-    }
-
-    println("\n\nDelete Values");
-    list.del(1);
-    list.del(8);
-    list.del(5);
-    list.print();
-
-    println("\n\nDelete from Indexes");
-    // list.delin(3);
-    list.delin(3, list.size() - 4);
-    list.print();
-
-    println("\n\nPrepend:");
-    list.prepend(1);
-    list.print();
-    cout << "\nSize: " << list.size() << "\n";
-
-    println("\n\n\n\nStrings:");
-    linked_list<string> list2("123", "Such a", "Why does this work");
-    list2.print();
-    list2.appends("wooowowow", "Please Work");
-    println();
-    list2.print();
-
-    println("\n\nFloats:");
-    linked_list<float> list3(4.2, 0.123, 9.1233);
-    list3.print();
-
     return 0;
 }
