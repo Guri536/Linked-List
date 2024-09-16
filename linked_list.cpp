@@ -1,6 +1,21 @@
 #include<bits/stdc++.h>
 using namespace std;
 
+struct mydt {
+    int a{};
+    string b;
+    mydt(int i, string j) : a(i), b(j) {}
+};
+
+void operator<<(ostream& out, mydt obj) {
+    std::print("Id: {}\nName: {}", obj.a, obj.b);
+}
+
+void operator<<(ostream&, vector<int>& obj) {
+    for (int i : obj) { cout << i << " "; }
+}
+
+
 template<typename data_type>
 struct _node {
     data_type data{};
@@ -71,30 +86,32 @@ public:
 
     int size() { return _size; }
 
-    template <typename T, typename = void>
+    template <typename T, typename N = void>
     struct check : false_type {};
 
     template <typename T>
-    struct check<T, typename enable_if<is_same<decltype(declval<std::ostream&>() << declval<T>()), ostream&>::value>::type>
+    struct check<T, typename enable_if<is_same<decltype((declval<std::ostream&>()) << (declval<T>())), ostream&>::value>::type>
         : true_type {};
 
     // void print() {
-    template<typename> typename enable_if<check<dt>::value, void>::type print() {
+    template<typename T = void>
+    auto print() noexcept -> enable_if<check<dt>::value, T>::type {
         std::print("{} ", "{");
         for (linked_list::Iterator iter = begin(); iter != nullptr; iter++) {
             cout << **iter; cout << " ";
-            // cout << typeid(decltype(*iter)).name() << " ";
         }
         std::print("{}", "}");
     }
-    template<typename> typename enable_if<!check<dt>::value, void>::type print() {
-        std::print("Bruh");
+    template<typename T = void>
+    auto print() noexcept -> enable_if<!check<dt>::value, T>::type {
+        std::print("No Return Type for ");
+        cout << typeid(dt).name();
     }
 
-    // void println() {
-    //     print();
-    //     std::println();
-    // }
+    void println() {
+        print();
+        std::println();
+    }
 
     void insert(const int index, const dt value) {
         node* temp = new node(value);
@@ -146,7 +163,6 @@ public:
         _size--;
         end_update();
     }
-
     void delin(const int indexa, const int indexb = 1) {
         linked_list::Iterator iter{ begin() };
         for (int i{};i < indexa - 1;i++) { iter++; }
@@ -158,22 +174,25 @@ public:
     }
 };
 
-struct mydt {
-    int a{};
-    string b;
-    mydt(int i, string j) : a(i), b(j) {}
-};
+
+// void operator<<(ostream& out, mydt& obj){
+//     print("Id: {}\nName: ", obj.a, obj.b);
+// }
 
 int main() {
     // linked_list<mydt> list;
     // list.appends(mydt(1, "boo"), mydt(4, "wow"));
-    // list.print();
-    // // list.print();
+    // list.println();
+    // // list.prin
     // for (int i : views::iota(0, list.size())) {
     //     cout << list[i]->b << " ";
     // }
-    linked_list<int> list;
-    list.appends(7, 2, 2, 4, 12, 5);
-    list.print();
+    // println();
+    // linked_list<int> list2;
+    // list2.appends(7, 2, 2, 4, 12, 5);
+    // list2.println();
+    linked_list<vector<int>> list3;
+    list3.appends(vector<int>{1, 2, 3});
+    list3.print();
     return 0;
 }
